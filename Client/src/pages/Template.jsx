@@ -177,7 +177,8 @@ const Template = () => {
       yPos = 176; // ABSOLUTE Y for FROM/TO boxes
       
       // ===== FROM AND TO BOXES (ABSOLUTE, SIDE BY SIDE) =====
-      const fromToHeight = 52;
+      // *** MODIFIED: Increased height from 52pt to 70pt to accommodate 3-4 lines ***
+      const fromToHeight = 70;
       const halfWidth = (tableWidth / 2);
       
       // FROM box (left)
@@ -188,20 +189,22 @@ const Template = () => {
       pdf.setFontSize(9);
       pdf.text('From', tableX + 4, yPos + 12);
       
-      // FROM content (max 2 lines, truncate)
+      // FROM content - *** MODIFIED: Allow full text wrapping, no truncation ***
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
       const fromText = formData.from || '';
       const fromLines = pdf.splitTextToSize(fromText, halfWidth - 10);
-      const fromDisplay = fromLines.slice(0, 2); // Max 2 lines
-      if (fromLines.length > 2) {
-        fromDisplay[1] = fromDisplay[1].substring(0, fromDisplay[1].length - 3) + '...';
-      }
+      const maxFromLines = 4; // Allow up to 4 lines
       let fromY = yPos + 24;
-      fromDisplay.forEach(line => {
-        pdf.text(line, tableX + 4, fromY);
-        fromY += 10;
-      });
+      const fromLineHeight = 11;
+      
+      // Display up to maxFromLines without ellipsis
+      for (let i = 0; i < Math.min(fromLines.length, maxFromLines); i++) {
+        if (fromY + fromLineHeight <= yPos + fromToHeight - 4) { // Check if line fits
+          pdf.text(fromLines[i], tableX + 4, fromY);
+          fromY += fromLineHeight;
+        }
+      }
       
       // TO box (right)
       pdf.rect(tableX + halfWidth, yPos, halfWidth, fromToHeight);
@@ -210,27 +213,29 @@ const Template = () => {
       pdf.setFontSize(9);
       pdf.text('To', tableX + halfWidth + 4, yPos + 12);
       
-      // TO content (max 2 lines, truncate)
+      // TO content - *** MODIFIED: Allow full text wrapping, no truncation ***
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
       const toText = formData.to || '';
       const toLines = pdf.splitTextToSize(toText, halfWidth - 10);
-      const toDisplay = toLines.slice(0, 2); // Max 2 lines
-      if (toLines.length > 2) {
-        toDisplay[1] = toDisplay[1].substring(0, toDisplay[1].length - 3) + '...';
-      }
+      const maxToLines = 4; // Allow up to 4 lines
       let toY = yPos + 24;
-      toDisplay.forEach(line => {
-        pdf.text(line, tableX + halfWidth + 4, toY);
-        toY += 10;
-      });
+      const toLineHeight = 11;
       
-      yPos = 238; // ABSOLUTE Y after FROM/TO boxes
+      // Display up to maxToLines without ellipsis
+      for (let i = 0; i < Math.min(toLines.length, maxToLines); i++) {
+        if (toY + toLineHeight <= yPos + fromToHeight - 4) { // Check if line fits
+          pdf.text(toLines[i], tableX + halfWidth + 4, toY);
+          toY += toLineHeight;
+        }
+      }
+      
+      yPos = 256; // ABSOLUTE Y after FROM/TO boxes (adjusted from 238 to 256, +18pt)
       
       // ===== RESPECTED SIR/MADAM (ABSOLUTE) =====
       pdf.setFont('times', 'normal');
       pdf.setFontSize(9);
-      pdf.text('Respected sir/Madam', tableX + 4, yPos);
+      pdf.text('Respected Sir/Madam', tableX + 4, yPos);
       
       yPos = 252; // ABSOLUTE Y for subject
       
