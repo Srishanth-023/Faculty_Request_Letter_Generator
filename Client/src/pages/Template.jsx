@@ -157,7 +157,9 @@ const Template = () => {
       // Row 1 content
       pdf.setFont('times', 'bold');
       pdf.setFontSize(8);
-      pdf.text('ACADEMIC - FORMS', col1X + 4, yPos + 12);
+      const academicFormsText = 'ACADEMIC - FORMS';
+      const academicFormsWidth = pdf.getStringUnitWidth(academicFormsText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(academicFormsText, col1X + (col1Width - academicFormsWidth) / 2, yPos + 12);
       pdf.setFont('times', 'normal');
       pdf.text('Issue No / Date', col2X + 4, yPos + 12);
       pdf.text('Doc. Ref.', col3X + 4, yPos + 12);
@@ -165,7 +167,9 @@ const Template = () => {
       // Row 2 content
       pdf.setFont('times', 'bold');
       pdf.setFontSize(8);
-      pdf.text('FACULTY REQUEST LETTER', col1X + 4, yPos + rowHeight + 12);
+      const facultyLetterText = 'FACULTY REQUEST LETTER';
+      const facultyLetterWidth = pdf.getStringUnitWidth(facultyLetterText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(facultyLetterText, col1X + (col1Width - facultyLetterWidth) / 2, yPos + rowHeight + 12);
       pdf.setFont('times', 'normal');
       pdf.text('01 / 19.08.2024', col2X + 4, yPos + rowHeight + 12);
       pdf.text('KITE/ AC/FRL/ 76', col3X + 4, yPos + rowHeight + 12);
@@ -173,7 +177,9 @@ const Template = () => {
       // Row 3 content
       pdf.setFont('times', 'bold');
       pdf.setFontSize(8);
-      pdf.text('ACADEMIC YEAR: 2024 - 2025', col1X + 4, yPos + (2 * rowHeight) + 12);
+      const academicYearText = 'ACADEMIC YEAR: 2024 - 2025';
+      const academicYearWidth = pdf.getStringUnitWidth(academicYearText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(academicYearText, col1X + (col1Width - academicYearWidth) / 2, yPos + (2 * rowHeight) + 12);
       pdf.text('Department', col2X + 4, yPos + (2 * rowHeight) + 12);
       pdf.setFont('times', 'normal');
       const deptText = formData.department || '';
@@ -245,14 +251,14 @@ const Template = () => {
         }
       }
       
-      yPos = 268; // ABSOLUTE Y after FROM/TO boxes (adjusted for title position)
+      yPos = 275; // ABSOLUTE Y after FROM/TO boxes (increased top padding)
       
       // ===== RESPECTED SIR/MADAM (ABSOLUTE) =====
       pdf.setFont('times', 'normal');
       pdf.setFontSize(9);
       pdf.text('Respected Sir/Madam', tableX + 4, yPos);
       
-      yPos = 282; // ABSOLUTE Y for subject (moved below Respected Sir/Madam)
+      yPos = 290; // ABSOLUTE Y for subject (adjusted below Respected Sir/Madam)
       
       // ===== SUBJECT LINE (ABSOLUTE, SINGLE LINE WITH TRUNCATION) =====
       pdf.setFont('times', 'bold');
@@ -270,7 +276,7 @@ const Template = () => {
       }
       pdf.text(subjectDisplay, tableX + 50, yPos);
       
-      yPos = 300; // ABSOLUTE Y for body box (adjusted to maintain spacing)
+      yPos = 308; // ABSOLUTE Y for body box (adjusted to maintain spacing)
       
       // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE - EXPANDED TO FILL PAGE) =====
       const bodyHeight = 460; // Expanded from 310pt to fill available space (no footer)
@@ -310,6 +316,22 @@ const Template = () => {
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
       pdf.text(currentDate || formData.date, tableX + 35, yPos + 16);
+      
+      // ===== POWERED BY IPS TECH COMMUNITY (RIGHT ALIGNED) =====
+      const signatureText = 'Powered by IPS Tech Community';
+      
+      pdf.setFont('times', 'italic');
+      pdf.setFontSize(8);
+      pdf.setTextColor(60, 60, 60); // Dark gray #3C3C3C
+      
+      // Calculate text width and position it near the right edge
+      const signatureWidth = pdf.getStringUnitWidth(signatureText) * 8 / pdf.internal.scaleFactor;
+      const signatureX = tableX + tableWidth - signatureWidth - 10; // 10pt padding from right edge
+      
+      pdf.text(signatureText, signatureX, yPos + 16);
+      
+      // Reset text color to black
+      pdf.setTextColor(0, 0, 0);
       
       // Save PDF
       const fileName = `Faculty_Request_Letter_${currentDate.replace(/\./g, '_')}.pdf`;
