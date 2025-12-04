@@ -100,7 +100,7 @@ const Template = () => {
       // Header text - Institution name (ABSOLUTE POSITION)
       pdf.setFont('times', 'bold');
       pdf.setFontSize(11);
-      const institutionText = 'KGISL INSTITUTE OF TECHNOLOGY,';
+      const institutionText = 'KGISL INSTITUTE OF TECHNOLOGY';
       const instWidth = pdf.getStringUnitWidth(institutionText) * 11 / pdf.internal.scaleFactor;
       pdf.text(institutionText, (pageWidth - instWidth) / 2, yPos + 14);
       
@@ -165,7 +165,7 @@ const Template = () => {
       const truncatedDept = deptText.length > 12 ? deptText.substring(0, 12) + '...' : deptText;
       pdf.text(truncatedDept, col3X + 4, yPos + (2 * rowHeight) + 12);
       
-      yPos = 156; // ABSOLUTE Y after header table
+      yPos = 168; // ABSOLUTE Y after header table (moved down for better spacing)
       
       // ===== MAIN TITLE (ABSOLUTE) =====
       pdf.setFont('times', 'bold');
@@ -174,7 +174,7 @@ const Template = () => {
       const titleWidth = pdf.getStringUnitWidth(mainTitle) * 11 / pdf.internal.scaleFactor;
       pdf.text(mainTitle, (pageWidth - titleWidth) / 2, yPos);
       
-      yPos = 176; // ABSOLUTE Y for FROM/TO boxes
+      yPos = 188; // ABSOLUTE Y for FROM/TO boxes (adjusted for title position)
       
       // ===== FROM AND TO BOXES (ABSOLUTE, SIDE BY SIDE) =====
       // *** MODIFIED: Increased height from 52pt to 70pt to accommodate 3-4 lines ***
@@ -230,14 +230,14 @@ const Template = () => {
         }
       }
       
-      yPos = 256; // ABSOLUTE Y after FROM/TO boxes (adjusted from 238 to 256, +18pt)
+      yPos = 268; // ABSOLUTE Y after FROM/TO boxes (adjusted for title position)
       
       // ===== RESPECTED SIR/MADAM (ABSOLUTE) =====
       pdf.setFont('times', 'normal');
       pdf.setFontSize(9);
       pdf.text('Respected Sir/Madam', tableX + 4, yPos);
       
-      yPos = 252; // ABSOLUTE Y for subject
+      yPos = 282; // ABSOLUTE Y for subject (moved below Respected Sir/Madam)
       
       // ===== SUBJECT LINE (ABSOLUTE, SINGLE LINE WITH TRUNCATION) =====
       pdf.setFont('times', 'bold');
@@ -255,10 +255,10 @@ const Template = () => {
       }
       pdf.text(subjectDisplay, tableX + 50, yPos);
       
-      yPos = 270; // ABSOLUTE Y for body box
+      yPos = 300; // ABSOLUTE Y for body box (adjusted to maintain spacing)
       
       // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE) =====
-      const bodyHeight = 340;
+      const bodyHeight = 310; // Reduced to compensate for title repositioning
       pdf.setLineWidth(0.5);
       pdf.rect(tableX, yPos, tableWidth, bodyHeight);
       
@@ -267,7 +267,7 @@ const Template = () => {
       pdf.setFontSize(9);
       const bodyText = formData.body || '';
       const bodyLines = pdf.splitTextToSize(bodyText, tableWidth - 12);
-      const maxBodyLines = 28; // Max lines that fit
+      const maxBodyLines = 25; // Adjusted for reduced body height (310pt)
       let bodyY = yPos + 14;
       const lineHeight = 12;
       
