@@ -161,8 +161,12 @@ const Template = () => {
       const academicFormsWidth = pdf.getStringUnitWidth(academicFormsText) * 8 / pdf.internal.scaleFactor;
       pdf.text(academicFormsText, col1X + (col1Width - academicFormsWidth) / 2, yPos + 12);
       pdf.setFont('times', 'normal');
-      pdf.text('Issue No / Date', col2X + 4, yPos + 12);
-      pdf.text('Doc. Ref.', col3X + 4, yPos + 12);
+      const issueNoDateText = 'Issue No / Date';
+      const issueNoDateWidth = pdf.getStringUnitWidth(issueNoDateText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(issueNoDateText, col2X + (col2Width - issueNoDateWidth) / 2, yPos + 12);
+      const docRefText = 'Doc. Ref.';
+      const docRefWidth = pdf.getStringUnitWidth(docRefText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(docRefText, col3X + (col3Width - docRefWidth) / 2, yPos + 12);
       
       // Row 2 content
       pdf.setFont('times', 'bold');
@@ -171,8 +175,12 @@ const Template = () => {
       const facultyLetterWidth = pdf.getStringUnitWidth(facultyLetterText) * 8 / pdf.internal.scaleFactor;
       pdf.text(facultyLetterText, col1X + (col1Width - facultyLetterWidth) / 2, yPos + rowHeight + 12);
       pdf.setFont('times', 'normal');
-      pdf.text('01 / 19.08.2024', col2X + 4, yPos + rowHeight + 12);
-      pdf.text('KITE/ AC/FRL/ 76', col3X + 4, yPos + rowHeight + 12);
+      const dateText = '01 / 19.08.2024';
+      const dateWidth = pdf.getStringUnitWidth(dateText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(dateText, col2X + (col2Width - dateWidth) / 2, yPos + rowHeight + 12);
+      const kiteRefText = 'KITE/ AC/FRL/ 76';
+      const kiteRefWidth = pdf.getStringUnitWidth(kiteRefText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(kiteRefText, col3X + (col3Width - kiteRefWidth) / 2, yPos + rowHeight + 12);
       
       // Row 3 content
       pdf.setFont('times', 'bold');
@@ -180,11 +188,14 @@ const Template = () => {
       const academicYearText = 'ACADEMIC YEAR: 2024 - 2025';
       const academicYearWidth = pdf.getStringUnitWidth(academicYearText) * 8 / pdf.internal.scaleFactor;
       pdf.text(academicYearText, col1X + (col1Width - academicYearWidth) / 2, yPos + (2 * rowHeight) + 12);
-      pdf.text('Department', col2X + 4, yPos + (2 * rowHeight) + 12);
+      const departmentLabelText = 'Department';
+      const departmentLabelWidth = pdf.getStringUnitWidth(departmentLabelText) * 8 / pdf.internal.scaleFactor;
+      pdf.text(departmentLabelText, col2X + (col2Width - departmentLabelWidth) / 2, yPos + (2 * rowHeight) + 12);
       pdf.setFont('times', 'normal');
       const deptText = formData.department || '';
       const truncatedDept = deptText.length > 12 ? deptText.substring(0, 12) + '...' : deptText;
-      pdf.text(truncatedDept, col3X + 4, yPos + (2 * rowHeight) + 12);
+      const deptTextWidth = pdf.getStringUnitWidth(truncatedDept) * 8 / pdf.internal.scaleFactor;
+      pdf.text(truncatedDept, col3X + (col3Width - deptTextWidth) / 2, yPos + (2 * rowHeight) + 12);
       
       yPos = 168; // ABSOLUTE Y after header table (moved down for better spacing)
       
@@ -279,7 +290,7 @@ const Template = () => {
       yPos = 308; // ABSOLUTE Y for body box (adjusted to maintain spacing)
       
       // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE - EXPANDED TO FILL PAGE) =====
-      const bodyHeight = 460; // Expanded from 310pt to fill available space (no footer)
+      const bodyHeight = 445; // Reduced to create gap before date box
       pdf.setLineWidth(0.5);
       pdf.rect(tableX, yPos, tableWidth, bodyHeight);
       
@@ -288,7 +299,7 @@ const Template = () => {
       pdf.setFontSize(9);
       const bodyText = formData.body || '';
       const bodyLines = pdf.splitTextToSize(bodyText, tableWidth - 12);
-      const maxBodyLines = 38; // Increased for expanded body height
+      const maxBodyLines = 37; // Adjusted for reduced body height
       let bodyY = yPos + 14;
       const lineHeight = 12;
       
@@ -301,21 +312,21 @@ const Template = () => {
         bodyY += lineHeight;
       }
       
-      yPos = 770; // ABSOLUTE Y for date box (moved to bottom)
+      yPos = 768; // ABSOLUTE Y for date box with gap from body box (308 + 445 + 15 gap)
       
       // ===== DATE BOX (ABSOLUTE, LEFT SIDE ONLY) =====
       const dateBoxWidth = halfWidth;
-      const dateBoxHeight = 26;
+      const dateBoxHeight = 30;
       pdf.setLineWidth(0.5);
       pdf.rect(tableX, yPos, dateBoxWidth, dateBoxHeight);
       
       pdf.setFont('times', 'bold');
       pdf.setFontSize(9);
-      pdf.text('Date:', tableX + 4, yPos + 16);
+      pdf.text('Date:', tableX + 6, yPos + 20);
       
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      pdf.text(currentDate || formData.date, tableX + 35, yPos + 16);
+      pdf.text(currentDate || formData.date, tableX + 38, yPos + 20);
       
       // ===== POWERED BY IPS TECH COMMUNITY (RIGHT ALIGNED) =====
       const signatureText = 'Powered by IPS Tech Community';
@@ -328,7 +339,7 @@ const Template = () => {
       const signatureWidth = pdf.getStringUnitWidth(signatureText) * 8 / pdf.internal.scaleFactor;
       const signatureX = tableX + tableWidth - signatureWidth - 10; // 10pt padding from right edge
       
-      pdf.text(signatureText, signatureX, yPos + 16);
+      pdf.text(signatureText, signatureX, yPos + 20);
       
       // Reset text color to black
       pdf.setTextColor(0, 0, 0);
