@@ -103,7 +103,7 @@ const Template = () => {
       // ===== HEADER SECTION (ABSOLUTE POSITION) =====
       let yPos = 40;
       
-      // Logo - EXACT POSITION
+      // Logo - EXACT POSITION (LEFT SIDE)
       const logoWidth = 72;
       const logoHeight = 36;
       try {
@@ -111,6 +111,15 @@ const Template = () => {
       } catch (error) {
         console.log('Logo not loaded');
       }
+      
+      // // IPS Logo - RIGHT SIDE
+      // const ipsLogoWidth = 72;
+      // const ipsLogoHeight = 36;
+      // try {
+      //   pdf.addImage(ipslogo, 'PNG', rightMargin - ipsLogoWidth - 8, yPos, ipsLogoWidth, ipsLogoHeight);
+      // } catch (error) {
+      //   console.log('IPS Logo not loaded');
+      // }
       
       // Header text - Institution name (ABSOLUTE POSITION)
       pdf.setFont('times', 'bold');
