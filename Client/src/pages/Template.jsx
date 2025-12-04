@@ -324,18 +324,33 @@ const Template = () => {
       yPos = 768; // ABSOLUTE Y for date box with gap from body box (308 + 445 + 15 gap)
       
       // ===== DATE BOX (ABSOLUTE, LEFT SIDE ONLY) =====
-      const dateBoxWidth = halfWidth;
-      const dateBoxHeight = 30;
+      const dateBoxWidth = 120; // Reduced from halfWidth to fit date content
+      const dateBoxHeight = 28;
       pdf.setLineWidth(0.5);
       pdf.rect(tableX, yPos, dateBoxWidth, dateBoxHeight);
       
+      // Center align the date text both horizontally and vertically
       pdf.setFont('times', 'bold');
       pdf.setFontSize(9);
-      pdf.text('Date:', tableX + 6, yPos + 20);
+      const dateLabel = 'Date:';
+      const dateLabelWidth = pdf.getStringUnitWidth(dateLabel) * 9 / pdf.internal.scaleFactor;
       
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      pdf.text(currentDate || formData.date, tableX + 38, yPos + 20);
+      const dateValue = currentDate || formData.date;
+      const dateValueWidth = pdf.getStringUnitWidth(dateValue) * 8 / pdf.internal.scaleFactor;
+      
+      const totalDateWidth = dateLabelWidth + 4 + dateValueWidth; // 4pt spacing
+      const startX = tableX + (dateBoxWidth - totalDateWidth) / 2;
+      const textY = yPos + (dateBoxHeight / 2) + 3.5; // Vertically center with slight adjustment
+      
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(9);
+      pdf.text(dateLabel, startX, textY);
+      
+      pdf.setFont('times', 'normal');
+      pdf.setFontSize(8);
+      pdf.text(dateValue, startX + dateLabelWidth + 4, textY);
       
       // ===== POWERED BY IPS TECH COMMUNITY (RIGHT ALIGNED) =====
       const signatureText = 'Powered by IPS Tech Community';
