@@ -21,9 +21,24 @@ const Template = () => {
   // References to form elements
   const formRef = useRef(null);
 
-  // Handle text input changes
+  // Character limits for form fields
+  const CHAR_LIMITS = {
+    from: 200,      // ~4 lines of text in the FROM box
+    to: 200,        // ~4 lines of text in the TO box
+    subject: 120,   // Single line subject
+    body: 3800,     // ~38 lines of body text (expanded without footer)
+    department: 50
+  };
+
+  // Handle text input changes with character limits
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Enforce character limits
+    if (CHAR_LIMITS[name] && value.length > CHAR_LIMITS[name]) {
+      return; // Don't update if over limit
+    }
+    
     setFormData({
       ...formData,
       [name]: value
@@ -257,8 +272,8 @@ const Template = () => {
       
       yPos = 300; // ABSOLUTE Y for body box (adjusted to maintain spacing)
       
-      // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE) =====
-      const bodyHeight = 310; // Reduced to compensate for title repositioning
+      // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE - EXPANDED TO FILL PAGE) =====
+      const bodyHeight = 460; // Expanded from 310pt to fill available space (no footer)
       pdf.setLineWidth(0.5);
       pdf.rect(tableX, yPos, tableWidth, bodyHeight);
       
@@ -267,7 +282,7 @@ const Template = () => {
       pdf.setFontSize(9);
       const bodyText = formData.body || '';
       const bodyLines = pdf.splitTextToSize(bodyText, tableWidth - 12);
-      const maxBodyLines = 25; // Adjusted for reduced body height (310pt)
+      const maxBodyLines = 38; // Increased for expanded body height
       let bodyY = yPos + 14;
       const lineHeight = 12;
       
@@ -280,7 +295,7 @@ const Template = () => {
         bodyY += lineHeight;
       }
       
-      yPos = 620; // ABSOLUTE Y for date box
+      yPos = 770; // ABSOLUTE Y for date box (moved to bottom)
       
       // ===== DATE BOX (ABSOLUTE, LEFT SIDE ONLY) =====
       const dateBoxWidth = halfWidth;
@@ -295,38 +310,6 @@ const Template = () => {
       pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
       pdf.text(currentDate || formData.date, tableX + 35, yPos + 16);
-      
-      yPos = 656; // ABSOLUTE Y for footer grid
-      
-      // ===== FOOTER REMARKS GRID (ABSOLUTE, 3 ROWS × 2 COLUMNS) =====
-      const gridRowHeight = 50;
-      const gridRows = 3;
-      
-      // Horizontal lines
-      for (let i = 0; i <= gridRows; i++) {
-        pdf.line(tableX, yPos + (i * gridRowHeight), tableX + tableWidth, yPos + (i * gridRowHeight));
-      }
-      
-      // Vertical lines
-      pdf.line(tableX, yPos, tableX, yPos + (gridRows * gridRowHeight)); // Left
-      pdf.line(tableX + halfWidth, yPos, tableX + halfWidth, yPos + (gridRows * gridRowHeight)); // Center
-      pdf.line(tableX + tableWidth, yPos, tableX + tableWidth, yPos + (gridRows * gridRowHeight)); // Right
-      
-      // Row labels
-      pdf.setFont('times', 'normal');
-      pdf.setFontSize(8);
-      
-      // Row 1
-      pdf.text('Remarks By HoD', tableX + 4, yPos + 12);
-      pdf.text('Dean/IQAC(if applicable)', tableX + halfWidth + 4, yPos + 12);
-      
-      // Row 2
-      pdf.text('Remarks by Principal', tableX + 4, yPos + gridRowHeight + 12);
-      pdf.text('Remarks by Director(A&A)', tableX + halfWidth + 4, yPos + gridRowHeight + 12);
-      
-      // Row 3
-      pdf.text('Office Use/ A.O', tableX + 4, yPos + (2 * gridRowHeight) + 12);
-      pdf.text('CEO', tableX + halfWidth + 4, yPos + (2 * gridRowHeight) + 12);
       
       // Save PDF
       const fileName = `Faculty_Request_Letter_${currentDate.replace(/\./g, '_')}.pdf`;
@@ -423,15 +406,16 @@ const Template = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
                 <label className="block text-sm font-medium text-blue-700 mb-2">
-                  From *
+                  From * <span className="text-xs text-gray-500">({formData.from.length}/{CHAR_LIMITS.from})</span>
                 </label>
                 <textarea
                   name="from"
                   value={formData.from}
                   onChange={handleInputChange}
                   rows="3"
+                  maxLength={CHAR_LIMITS.from}
                   className={`w-full px-4 py-3 border ${errors.from ? 'border-red-400' : 'border-gray-300'} rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150`}
-                  placeholder="Enter sender information"
+                  placeholder="Enter sender information (max 200 characters)"
                   required
                 ></textarea>
                 {errors.from && (
@@ -441,15 +425,16 @@ const Template = () => {
               
               <div className="relative">
                 <label className="block text-sm font-medium text-blue-700 mb-2">
-                  To *
+                  To * <span className="text-xs text-gray-500">({formData.to.length}/{CHAR_LIMITS.to})</span>
                 </label>
                 <textarea
                   name="to"
                   value={formData.to}
                   onChange={handleInputChange}
                   rows="3"
+                  maxLength={CHAR_LIMITS.to}
                   className={`w-full px-4 py-3 border ${errors.to ? 'border-red-400' : 'border-gray-300'} rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150`}
-                  placeholder="Enter recipient information"
+                  placeholder="Enter recipient information (max 200 characters)"
                   required
                 ></textarea>
                 {errors.to && (
@@ -461,15 +446,16 @@ const Template = () => {
             {/* Subject Field */}
             <div className="relative">
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                Subject *
+                Subject * <span className="text-xs text-gray-500">({formData.subject.length}/{CHAR_LIMITS.subject})</span>
               </label>
               <input
                 type="text"
                 name="subject"
                 value={formData.subject}
                 onChange={handleInputChange}
+                maxLength={CHAR_LIMITS.subject}
                 className={`block w-full px-4 py-3 border ${errors.subject ? 'border-red-400' : 'border-gray-300'} rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150`}
-                placeholder="Enter the subject of your request"
+                placeholder="Enter the subject of your request (max 120 characters)"
                 required
               />
               {errors.subject && (
@@ -488,15 +474,16 @@ const Template = () => {
               
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Body *
+                  Body * <span className="text-xs text-gray-500">({formData.body.length}/{CHAR_LIMITS.body})</span>
                 </label>
                 <textarea
                   name="body"
                   value={formData.body}
                   onChange={handleInputChange}
                   rows="10"
+                  maxLength={CHAR_LIMITS.body}
                   className={`w-full px-4 py-3 border ${errors.body ? 'border-red-400' : 'border-gray-300'} rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150`}
-                  placeholder="Enter the main content of your request letter"
+                  placeholder="Enter the main content of your request letter (max 3800 characters)"
                   required
                 ></textarea>
                 {errors.body && (
