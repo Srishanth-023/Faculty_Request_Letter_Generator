@@ -562,7 +562,7 @@ const Template = () => {
             </div>
             
             {/* Form Actions */}
-            <div className="flex items-center justify-end space-x-6 pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between space-x-6 pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={resetForm}
