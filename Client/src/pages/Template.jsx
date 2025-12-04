@@ -443,7 +443,7 @@ const Template = () => {
             {/* Department Field */}
             <div className="relative">
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                Department *
+                Department <span className="text-red-600">*</span>
               </label>
               <input
                 type="text"
@@ -463,7 +463,7 @@ const Template = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
                 <label className="block text-sm font-medium text-blue-700 mb-2">
-                  From * <span className="text-xs text-gray-500">({formData.from.length}/{CHAR_LIMITS.from})</span>
+                  From <span className="text-red-600">*</span> <span className="text-xs text-gray-500">({formData.from.length}/{CHAR_LIMITS.from})</span>
                 </label>
                 <textarea
                   name="from"
@@ -482,7 +482,7 @@ const Template = () => {
               
               <div className="relative">
                 <label className="block text-sm font-medium text-blue-700 mb-2">
-                  To * <span className="text-xs text-gray-500">({formData.to.length}/{CHAR_LIMITS.to})</span>
+                  To <span className="text-red-600">*</span> <span className="text-xs text-gray-500">({formData.to.length}/{CHAR_LIMITS.to})</span>
                 </label>
                 <textarea
                   name="to"
@@ -503,7 +503,7 @@ const Template = () => {
             {/* Subject Field */}
             <div className="relative">
               <label className="block text-sm font-medium text-blue-700 mb-2">
-                Subject * <span className="text-xs text-gray-500">({formData.subject.length}/{CHAR_LIMITS.subject})</span>
+                Subject <span className="text-red-600">*</span> <span className="text-xs text-gray-500">({formData.subject.length}/{CHAR_LIMITS.subject})</span>
               </label>
               <input
                 type="text"
@@ -531,7 +531,7 @@ const Template = () => {
               
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Body * <span className="text-xs text-gray-500">({formData.body.length}/{CHAR_LIMITS.body})</span>
+                  Body <span className="text-red-600">*</span> <span className="text-xs text-gray-500">({formData.body.length}/{CHAR_LIMITS.body})</span>
                 </label>
                 <textarea
                   name="body"
