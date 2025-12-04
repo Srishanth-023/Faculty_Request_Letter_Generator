@@ -69,240 +69,263 @@ const Template = () => {
     setIsGeneratingPdf(true);
     
     try {
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      // Create PDF with A4 portrait in points (595 × 842)
+      const pdf = new jsPDF('p', 'pt', 'a4');
+      const pageWidth = 595;
+      const pageHeight = 842;
       
-      // Border margin - 5mm from page edge
-      const borderMargin = 5;
+      // ABSOLUTE POSITIONING - All coordinates in points
+      // Margins
+      const leftMargin = 28;
+      const rightMargin = 567; // 595 - 28
+      const contentWidth = rightMargin - leftMargin;
       
-      // Draw main border around the page
-      pdf.setLineWidth(0.5);
+      // Draw outer page border
+      pdf.setLineWidth(1);
       pdf.setDrawColor(0, 0, 0);
-      pdf.rect(borderMargin, borderMargin, pageWidth - (2 * borderMargin), pageHeight - (2 * borderMargin));
+      pdf.rect(leftMargin, 28, contentWidth, 786); // 842 - 28 - 28
       
-      // ===== HEADER SECTION =====
-      // Header starts at 8mm from top border
-      let yPos = borderMargin + 8;
+      // ===== HEADER SECTION (ABSOLUTE POSITION) =====
+      let yPos = 40;
       
-      // Add KiTE logo (positioned at top-left inside border)
-      const logoWidth = 20;
-      const logoHeight = 10;
-      const logoX = borderMargin + 8;
-      const logoY = yPos;
-      
-      // Draw logo
+      // Logo - EXACT POSITION
+      const logoWidth = 72;
+      const logoHeight = 36;
       try {
-        pdf.addImage(logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+        pdf.addImage(logo, 'PNG', leftMargin + 8, yPos, logoWidth, logoHeight);
       } catch (error) {
         console.log('Logo not loaded');
       }
       
-      // Header text - KGISL INSTITUTE OF TECHNOLOGY
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'bold');
-      const headerTitle = 'KGISL INSTITUTE OF TECHNOLOGY,';
-      const titleWidth = pdf.getStringUnitWidth(headerTitle) * 12 / pdf.internal.scaleFactor;
-      pdf.text(headerTitle, (pageWidth - titleWidth) / 2, yPos + 4);
-      
-      // Address
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'normal');
-      const address = 'COIMBATORE -35, TN, INDIA';
-      const addressWidth = pdf.getStringUnitWidth(address) * 10 / pdf.internal.scaleFactor;
-      pdf.text(address, (pageWidth - addressWidth) / 2, yPos + 9);
-      
-      yPos += 13;
-      
-      // Header table with three columns
-      const tableStartX = borderMargin + 8;
-      const tableWidth = pageWidth - (2 * borderMargin) - 16;
-      const rowHeight = 7;
-      
-      // Draw top horizontal line
-      pdf.setLineWidth(0.4);
-      pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
-      
-      yPos += rowHeight;
-      
-      // Row 1: ACADEMIC - FORMS | Issue No / Date | Doc Ref
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('ACADEMIC - FORMS', tableStartX + 2, yPos - 2);
-      
-      // Vertical line 1 (after ACADEMIC - FORMS) - positioned at 65%
-      const col2X = tableStartX + tableWidth * 0.65;
-      pdf.line(col2X, yPos - rowHeight, col2X, yPos + rowHeight * 2);
-      
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(8);
-      pdf.text('Issue No / Date', col2X + 2, yPos - 2);
-      
-      // Vertical line 2 (after Issue No / Date) - positioned at 82%
-      const col3X = tableStartX + tableWidth * 0.82;
-      pdf.line(col3X, yPos - rowHeight, col3X, yPos + rowHeight * 2);
-      
-      pdf.text('Doc. Ref.', col3X + 2, yPos - 2);
-      
-      // Horizontal line
-      pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
-      
-      yPos += rowHeight;
-      
-      // Row 2: FACULTY REQUEST LETTER | 01 / 19.08.2024 | KITE/ AC/FRL/ 76
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('FACULTY REQUEST LETTER', tableStartX + 2, yPos - 2);
-      
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(8);
-      pdf.text('01 / 19.08.2024', col2X + 2, yPos - 2);
-      pdf.text('KITE/ AC/FRL/ 76', col3X + 2, yPos - 2);
-      
-      // Horizontal line
-      pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
-      
-      yPos += rowHeight;
-      
-      // Row 3: ACADEMIC YEAR: 2024 - 2025 | Department | (value)
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('ACADEMIC YEAR: 2024 - 2025', tableStartX + 2, yPos - 2);
-      
-      pdf.text('Department', col2X + 2, yPos - 2);
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(8);
-      pdf.text(formData.department || '', col3X + 2, yPos - 2);
-      
-      // Bottom horizontal line
-      pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
-      
-      yPos += 10;
-      
-      // Title: FACULTY REQUEST LETTER
+      // Header text - Institution name (ABSOLUTE POSITION)
+      pdf.setFont('times', 'bold');
       pdf.setFontSize(11);
-      pdf.setFont('helvetica', 'bold');
+      const institutionText = 'KGISL INSTITUTE OF TECHNOLOGY,';
+      const instWidth = pdf.getStringUnitWidth(institutionText) * 11 / pdf.internal.scaleFactor;
+      pdf.text(institutionText, (pageWidth - instWidth) / 2, yPos + 14);
+      
+      // Address (ABSOLUTE POSITION)
+      pdf.setFont('times', 'normal');
+      pdf.setFontSize(9);
+      const addressText = 'COIMBATORE -35, TN, INDIA';
+      const addrWidth = pdf.getStringUnitWidth(addressText) * 9 / pdf.internal.scaleFactor;
+      pdf.text(addressText, (pageWidth - addrWidth) / 2, yPos + 26);
+      
+      yPos = 92; // ABSOLUTE Y for header table
+      
+      // ===== HEADER TABLE (3 ROWS, 3 COLUMNS - ABSOLUTE) =====
+      const tableX = leftMargin + 8;
+      const tableWidth = contentWidth - 16;
+      const col1Width = 340;
+      const col2Width = 100;
+      const col3Width = tableWidth - col1Width - col2Width;
+      const rowHeight = 18;
+      
+      // Column X positions
+      const col1X = tableX;
+      const col2X = tableX + col1Width;
+      const col3X = tableX + col1Width + col2Width;
+      
+      pdf.setLineWidth(0.5);
+      
+      // Horizontal lines (4 lines for 3 rows)
+      for (let i = 0; i <= 3; i++) {
+        pdf.line(tableX, yPos + (i * rowHeight), tableX + tableWidth, yPos + (i * rowHeight));
+      }
+      
+      // Vertical lines
+      pdf.line(tableX, yPos, tableX, yPos + (3 * rowHeight)); // Left
+      pdf.line(col2X, yPos, col2X, yPos + (3 * rowHeight)); // Middle 1
+      pdf.line(col3X, yPos, col3X, yPos + (3 * rowHeight)); // Middle 2
+      pdf.line(tableX + tableWidth, yPos, tableX + tableWidth, yPos + (3 * rowHeight)); // Right
+      
+      // Row 1 content
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(8);
+      pdf.text('ACADEMIC - FORMS', col1X + 4, yPos + 12);
+      pdf.setFont('times', 'normal');
+      pdf.text('Issue No / Date', col2X + 4, yPos + 12);
+      pdf.text('Doc. Ref.', col3X + 4, yPos + 12);
+      
+      // Row 2 content
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(8);
+      pdf.text('FACULTY REQUEST LETTER', col1X + 4, yPos + rowHeight + 12);
+      pdf.setFont('times', 'normal');
+      pdf.text('01 / 19.08.2024', col2X + 4, yPos + rowHeight + 12);
+      pdf.text('KITE/ AC/FRL/ 76', col3X + 4, yPos + rowHeight + 12);
+      
+      // Row 3 content
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(8);
+      pdf.text('ACADEMIC YEAR: 2024 - 2025', col1X + 4, yPos + (2 * rowHeight) + 12);
+      pdf.text('Department', col2X + 4, yPos + (2 * rowHeight) + 12);
+      pdf.setFont('times', 'normal');
+      const deptText = formData.department || '';
+      const truncatedDept = deptText.length > 12 ? deptText.substring(0, 12) + '...' : deptText;
+      pdf.text(truncatedDept, col3X + 4, yPos + (2 * rowHeight) + 12);
+      
+      yPos = 156; // ABSOLUTE Y after header table
+      
+      // ===== MAIN TITLE (ABSOLUTE) =====
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(11);
       const mainTitle = 'FACULTY REQUEST LETTER';
-      const mainTitleWidth = pdf.getStringUnitWidth(mainTitle) * 11 / pdf.internal.scaleFactor;
-      pdf.text(mainTitle, (pageWidth - mainTitleWidth) / 2, yPos);
+      const titleWidth = pdf.getStringUnitWidth(mainTitle) * 11 / pdf.internal.scaleFactor;
+      pdf.text(mainTitle, (pageWidth - titleWidth) / 2, yPos);
       
-      yPos += 8;
+      yPos = 176; // ABSOLUTE Y for FROM/TO boxes
       
-      // ===== MAIN CONTENT SECTION =====
-      const contentStartX = tableStartX;
-      const contentWidth = tableWidth;
+      // ===== FROM AND TO BOXES (ABSOLUTE, SIDE BY SIDE) =====
+      const fromToHeight = 52;
+      const halfWidth = (tableWidth / 2);
       
-      // FROM and TO boxes
-      const boxHeight = 30;
-      const boxY = yPos;
-      const halfWidth = tableWidth / 2;
+      // FROM box (left)
+      pdf.setLineWidth(0.5);
+      pdf.rect(tableX, yPos, halfWidth, fromToHeight);
       
-      // Draw FROM box
-      pdf.setLineWidth(0.4);
-      pdf.rect(contentStartX, boxY, halfWidth, boxHeight);
-      
+      pdf.setFont('times', 'bold');
       pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('From', contentStartX + 3, boxY + 5);
+      pdf.text('From', tableX + 4, yPos + 12);
       
-      pdf.setFont('helvetica', 'normal');
+      // FROM content (max 2 lines, truncate)
+      pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      const fromLines = pdf.splitTextToSize(formData.from, halfWidth - 8);
-      pdf.text(fromLines, contentStartX + 3, boxY + 11);
+      const fromText = formData.from || '';
+      const fromLines = pdf.splitTextToSize(fromText, halfWidth - 10);
+      const fromDisplay = fromLines.slice(0, 2); // Max 2 lines
+      if (fromLines.length > 2) {
+        fromDisplay[1] = fromDisplay[1].substring(0, fromDisplay[1].length - 3) + '...';
+      }
+      let fromY = yPos + 24;
+      fromDisplay.forEach(line => {
+        pdf.text(line, tableX + 4, fromY);
+        fromY += 10;
+      });
       
-      // Draw TO box
-      pdf.rect(contentStartX + halfWidth, boxY, halfWidth, boxHeight);
+      // TO box (right)
+      pdf.rect(tableX + halfWidth, yPos, halfWidth, fromToHeight);
       
+      pdf.setFont('times', 'bold');
       pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('To', contentStartX + halfWidth + 3, boxY + 5);
+      pdf.text('To', tableX + halfWidth + 4, yPos + 12);
       
-      pdf.setFont('helvetica', 'normal');
+      // TO content (max 2 lines, truncate)
+      pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      const toLines = pdf.splitTextToSize(formData.to, halfWidth - 8);
-      pdf.text(toLines, contentStartX + halfWidth + 3, boxY + 11);
+      const toText = formData.to || '';
+      const toLines = pdf.splitTextToSize(toText, halfWidth - 10);
+      const toDisplay = toLines.slice(0, 2); // Max 2 lines
+      if (toLines.length > 2) {
+        toDisplay[1] = toDisplay[1].substring(0, toDisplay[1].length - 3) + '...';
+      }
+      let toY = yPos + 24;
+      toDisplay.forEach(line => {
+        pdf.text(line, tableX + halfWidth + 4, toY);
+        toY += 10;
+      });
       
-      yPos += boxHeight + 1;
+      yPos = 238; // ABSOLUTE Y after FROM/TO boxes
       
-      // Respected Sir/Madam
+      // ===== RESPECTED SIR/MADAM (ABSOLUTE) =====
+      pdf.setFont('times', 'normal');
       pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('Respected sir/Madam', contentStartX + 3, yPos);
+      pdf.text('Respected sir/Madam', tableX + 4, yPos);
       
-      yPos += 5;
+      yPos = 252; // ABSOLUTE Y for subject
       
-      // Subject line
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Subject :', contentStartX + 3, yPos);
-      
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(8);
-      const subjectLines = pdf.splitTextToSize(formData.subject, contentWidth - 25);
-      pdf.text(subjectLines, contentStartX + 20, yPos);
-      
-      yPos += 8;
-      
-      // Body section - Large box for content
-      const bodyBoxHeight = 125;
-      pdf.setLineWidth(0.4);
-      pdf.rect(contentStartX, yPos, contentWidth, bodyBoxHeight);
-      
-      pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'normal');
-      const bodyLines = pdf.splitTextToSize(formData.body, contentWidth - 8);
-      pdf.text(bodyLines, contentStartX + 4, yPos + 6);
-      
-      yPos += bodyBoxHeight + 2;
-      
-      // Date section
-      const dateBoxWidth = contentWidth / 2;
-      const dateBoxHeight = 8;
-      pdf.rect(contentStartX, yPos, dateBoxWidth, dateBoxHeight);
-      
+      // ===== SUBJECT LINE (ABSOLUTE, SINGLE LINE WITH TRUNCATION) =====
+      pdf.setFont('times', 'bold');
       pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Date:', contentStartX + 3, yPos + 5.5);
+      pdf.text('Subject :', tableX + 4, yPos);
       
-      pdf.setFont('helvetica', 'normal');
+      pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      pdf.text(currentDate || formData.date, contentStartX + 13, yPos + 5.5);
+      const subjectText = formData.subject || '';
+      const subjectWidth = tableWidth - 60;
+      const subjectLines = pdf.splitTextToSize(subjectText, subjectWidth);
+      let subjectDisplay = subjectLines[0] || '';
+      if (subjectLines.length > 1 || subjectDisplay.length > 80) {
+        subjectDisplay = subjectDisplay.substring(0, 80) + '...';
+      }
+      pdf.text(subjectDisplay, tableX + 50, yPos);
       
-      yPos += dateBoxHeight + 1;
+      yPos = 270; // ABSOLUTE Y for body box
       
-      // ===== FOOTER SECTION =====
-      // Footer boxes for remarks and signatures
-      const footerBoxHeight = 18;
+      // ===== BODY CONTENT BOX (ABSOLUTE, FIXED SIZE) =====
+      const bodyHeight = 340;
+      pdf.setLineWidth(0.5);
+      pdf.rect(tableX, yPos, tableWidth, bodyHeight);
       
-      // Remarks By HoD and Dean/IQAC boxes
-      pdf.setLineWidth(0.4);
-      pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
-      pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
+      // Body text (multiline with truncation)
+      pdf.setFont('times', 'normal');
+      pdf.setFontSize(9);
+      const bodyText = formData.body || '';
+      const bodyLines = pdf.splitTextToSize(bodyText, tableWidth - 12);
+      const maxBodyLines = 28; // Max lines that fit
+      let bodyY = yPos + 14;
+      const lineHeight = 12;
       
+      for (let i = 0; i < Math.min(bodyLines.length, maxBodyLines); i++) {
+        if (i === maxBodyLines - 1 && bodyLines.length > maxBodyLines) {
+          pdf.text(bodyLines[i].substring(0, bodyLines[i].length - 3) + '...', tableX + 6, bodyY);
+        } else {
+          pdf.text(bodyLines[i], tableX + 6, bodyY);
+        }
+        bodyY += lineHeight;
+      }
+      
+      yPos = 620; // ABSOLUTE Y for date box
+      
+      // ===== DATE BOX (ABSOLUTE, LEFT SIDE ONLY) =====
+      const dateBoxWidth = halfWidth;
+      const dateBoxHeight = 26;
+      pdf.setLineWidth(0.5);
+      pdf.rect(tableX, yPos, dateBoxWidth, dateBoxHeight);
+      
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(9);
+      pdf.text('Date:', tableX + 4, yPos + 16);
+      
+      pdf.setFont('times', 'normal');
       pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('Remarks By HoD', contentStartX + 3, yPos + 5);
-      pdf.text('Dean/IQAC(if applicable)', contentStartX + halfWidth + 3, yPos + 5);
+      pdf.text(currentDate || formData.date, tableX + 35, yPos + 16);
       
-      yPos += footerBoxHeight;
+      yPos = 656; // ABSOLUTE Y for footer grid
       
-      // Remarks by Principal and Remarks by Director boxes
-      pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
-      pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
+      // ===== FOOTER REMARKS GRID (ABSOLUTE, 3 ROWS × 2 COLUMNS) =====
+      const gridRowHeight = 50;
+      const gridRows = 3;
       
-      pdf.text('Remarks by Principal', contentStartX + 3, yPos + 5);
-      pdf.text('Remarks by Director(A&A)', contentStartX + halfWidth + 3, yPos + 5);
+      // Horizontal lines
+      for (let i = 0; i <= gridRows; i++) {
+        pdf.line(tableX, yPos + (i * gridRowHeight), tableX + tableWidth, yPos + (i * gridRowHeight));
+      }
       
-      yPos += footerBoxHeight;
+      // Vertical lines
+      pdf.line(tableX, yPos, tableX, yPos + (gridRows * gridRowHeight)); // Left
+      pdf.line(tableX + halfWidth, yPos, tableX + halfWidth, yPos + (gridRows * gridRowHeight)); // Center
+      pdf.line(tableX + tableWidth, yPos, tableX + tableWidth, yPos + (gridRows * gridRowHeight)); // Right
       
-      // Office Use/ A.O and CEO boxes
-      pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
-      pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
+      // Row labels
+      pdf.setFont('times', 'normal');
+      pdf.setFontSize(8);
       
-      pdf.text('Office Use/ A.O', contentStartX + 3, yPos + 5);
-      pdf.text('CEO', contentStartX + halfWidth + 3, yPos + 5);
+      // Row 1
+      pdf.text('Remarks By HoD', tableX + 4, yPos + 12);
+      pdf.text('Dean/IQAC(if applicable)', tableX + halfWidth + 4, yPos + 12);
       
-      // Save the PDF
-      pdf.save(`Faculty_Request_Letter_${currentDate.replace(/\./g, '_')}.pdf`);
+      // Row 2
+      pdf.text('Remarks by Principal', tableX + 4, yPos + gridRowHeight + 12);
+      pdf.text('Remarks by Director(A&A)', tableX + halfWidth + 4, yPos + gridRowHeight + 12);
+      
+      // Row 3
+      pdf.text('Office Use/ A.O', tableX + 4, yPos + (2 * gridRowHeight) + 12);
+      pdf.text('CEO', tableX + halfWidth + 4, yPos + (2 * gridRowHeight) + 12);
+      
+      // Save PDF
+      const fileName = `Faculty_Request_Letter_${currentDate.replace(/\./g, '_')}.pdf`;
+      pdf.save(fileName);
       
     } catch (error) {
       console.error("Error generating PDF:", error);
