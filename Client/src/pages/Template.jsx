@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { jsPDF } from 'jspdf';
 import logo from '../assets/kite-logo.webp'; 
+import ipslogo from '../assets/ips.webp';
 
 const Template = () => {
   // State for form fields
@@ -345,7 +346,13 @@ const Template = () => {
                     <p className="text-black-600 text-sm font-medium">KGISL Institute of Technology</p>
                   </div>
                 </div>
+                
               </div>
+              <img
+                  src={ipslogo} 
+                  alt="IPS Logo" 
+                  className="h-26 w-auto object-contain"
+                />
             </div>
           </div>
         </div>
@@ -533,9 +540,14 @@ const Template = () => {
                 <p className="text-gray-600 text-sm mb-4 md:mb-0">
                   © {new Date().getFullYear()} KGISL Institute of Technology. All rights reserved.
                 </p>
-                <p className="text-gray-500 text-sm">
-                  Faculty Request Letter Generator
-                </p>
+                <p className="text-gray-500 text-sm flex items-center gap-2">
+                <span>Powered by IPS Tech Community</span>
+                <img
+                  src={ipslogo}
+                  alt="IPS Logo"
+                  className="h-7 w-auto object-contain"
+                />
+              </p>
               </div>
             </div>
           </div>
