@@ -82,13 +82,13 @@ const Template = () => {
       pdf.rect(borderMargin, borderMargin, pageWidth - (2 * borderMargin), pageHeight - (2 * borderMargin));
       
       // ===== HEADER SECTION =====
-      // Header starts at 10mm from top border
-      let yPos = borderMargin + 5;
+      // Header starts at 8mm from top border
+      let yPos = borderMargin + 8;
       
       // Add KiTE logo (positioned at top-left inside border)
-      const logoWidth = 25;
-      const logoHeight = 12;
-      const logoX = borderMargin + 10;
+      const logoWidth = 20;
+      const logoHeight = 10;
+      const logoX = borderMargin + 8;
       const logoY = yPos;
       
       // Draw logo
@@ -103,24 +103,24 @@ const Template = () => {
       pdf.setFont('helvetica', 'bold');
       const headerTitle = 'KGISL INSTITUTE OF TECHNOLOGY,';
       const titleWidth = pdf.getStringUnitWidth(headerTitle) * 12 / pdf.internal.scaleFactor;
-      pdf.text(headerTitle, (pageWidth - titleWidth) / 2, yPos + 5);
+      pdf.text(headerTitle, (pageWidth - titleWidth) / 2, yPos + 4);
       
       // Address
       pdf.setFontSize(10);
       pdf.setFont('helvetica', 'normal');
       const address = 'COIMBATORE -35, TN, INDIA';
       const addressWidth = pdf.getStringUnitWidth(address) * 10 / pdf.internal.scaleFactor;
-      pdf.text(address, (pageWidth - addressWidth) / 2, yPos + 10);
+      pdf.text(address, (pageWidth - addressWidth) / 2, yPos + 9);
       
-      yPos += 15;
+      yPos += 13;
       
       // Header table with three columns
-      const tableStartX = borderMargin + 10;
-      const tableWidth = pageWidth - (2 * borderMargin) - 20;
-      const rowHeight = 6;
+      const tableStartX = borderMargin + 8;
+      const tableWidth = pageWidth - (2 * borderMargin) - 16;
+      const rowHeight = 7;
       
-      // Draw horizontal line
-      pdf.setLineWidth(0.3);
+      // Draw top horizontal line
+      pdf.setLineWidth(0.4);
       pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
       
       yPos += rowHeight;
@@ -128,20 +128,21 @@ const Template = () => {
       // Row 1: ACADEMIC - FORMS | Issue No / Date | Doc Ref
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('ACADEMIC - FORMS', tableStartX + 2, yPos - 1);
+      pdf.text('ACADEMIC - FORMS', tableStartX + 2, yPos - 2);
       
-      // Vertical line 1 (after ACADEMIC - FORMS)
-      const col2X = tableStartX + tableWidth * 0.6;
+      // Vertical line 1 (after ACADEMIC - FORMS) - positioned at 65%
+      const col2X = tableStartX + tableWidth * 0.65;
       pdf.line(col2X, yPos - rowHeight, col2X, yPos + rowHeight * 2);
       
       pdf.setFont('helvetica', 'normal');
-      pdf.text('Issue No / Date', col2X + 2, yPos - 1);
+      pdf.setFontSize(8);
+      pdf.text('Issue No / Date', col2X + 2, yPos - 2);
       
-      // Vertical line 2 (after Issue No / Date)
-      const col3X = tableStartX + tableWidth * 0.8;
+      // Vertical line 2 (after Issue No / Date) - positioned at 82%
+      const col3X = tableStartX + tableWidth * 0.82;
       pdf.line(col3X, yPos - rowHeight, col3X, yPos + rowHeight * 2);
       
-      pdf.text('Doc. Ref.', col3X + 2, yPos - 1);
+      pdf.text('Doc. Ref.', col3X + 2, yPos - 2);
       
       // Horizontal line
       pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
@@ -149,12 +150,14 @@ const Template = () => {
       yPos += rowHeight;
       
       // Row 2: FACULTY REQUEST LETTER | 01 / 19.08.2024 | KITE/ AC/FRL/ 76
+      pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('FACULTY REQUEST LETTER', tableStartX + 2, yPos - 1);
+      pdf.text('FACULTY REQUEST LETTER', tableStartX + 2, yPos - 2);
       
       pdf.setFont('helvetica', 'normal');
-      pdf.text('01 / 19.08.2024', col2X + 2, yPos - 1);
-      pdf.text('KITE/ AC/FRL/ 76', col3X + 2, yPos - 1);
+      pdf.setFontSize(8);
+      pdf.text('01 / 19.08.2024', col2X + 2, yPos - 2);
+      pdf.text('KITE/ AC/FRL/ 76', col3X + 2, yPos - 2);
       
       // Horizontal line
       pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
@@ -162,17 +165,19 @@ const Template = () => {
       yPos += rowHeight;
       
       // Row 3: ACADEMIC YEAR: 2024 - 2025 | Department | (value)
+      pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('ACADEMIC YEAR: 2024 - 2025', tableStartX + 2, yPos - 1);
+      pdf.text('ACADEMIC YEAR: 2024 - 2025', tableStartX + 2, yPos - 2);
       
-      pdf.text('Department', col2X + 2, yPos - 1);
+      pdf.text('Department', col2X + 2, yPos - 2);
       pdf.setFont('helvetica', 'normal');
-      pdf.text(formData.department || '', col3X + 2, yPos - 1);
+      pdf.setFontSize(8);
+      pdf.text(formData.department || '', col3X + 2, yPos - 2);
       
-      // Horizontal line
+      // Bottom horizontal line
       pdf.line(tableStartX, yPos, tableStartX + tableWidth, yPos);
       
-      yPos += 8;
+      yPos += 10;
       
       // Title: FACULTY REQUEST LETTER
       pdf.setFontSize(11);
@@ -181,100 +186,102 @@ const Template = () => {
       const mainTitleWidth = pdf.getStringUnitWidth(mainTitle) * 11 / pdf.internal.scaleFactor;
       pdf.text(mainTitle, (pageWidth - mainTitleWidth) / 2, yPos);
       
-      yPos += 10;
+      yPos += 8;
       
       // ===== MAIN CONTENT SECTION =====
       const contentStartX = tableStartX;
       const contentWidth = tableWidth;
       
       // FROM and TO boxes
-      const boxHeight = 25;
+      const boxHeight = 30;
       const boxY = yPos;
       const halfWidth = tableWidth / 2;
       
       // Draw FROM box
-      pdf.setLineWidth(0.3);
+      pdf.setLineWidth(0.4);
       pdf.rect(contentStartX, boxY, halfWidth, boxHeight);
       
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('From', contentStartX + 2, boxY + 4);
+      pdf.text('From', contentStartX + 3, boxY + 5);
       
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
-      const fromLines = pdf.splitTextToSize(formData.from, halfWidth - 6);
-      pdf.text(fromLines, contentStartX + 2, boxY + 9);
+      const fromLines = pdf.splitTextToSize(formData.from, halfWidth - 8);
+      pdf.text(fromLines, contentStartX + 3, boxY + 11);
       
       // Draw TO box
       pdf.rect(contentStartX + halfWidth, boxY, halfWidth, boxHeight);
       
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('To', contentStartX + halfWidth + 2, boxY + 4);
+      pdf.text('To', contentStartX + halfWidth + 3, boxY + 5);
       
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
-      const toLines = pdf.splitTextToSize(formData.to, halfWidth - 6);
-      pdf.text(toLines, contentStartX + halfWidth + 2, boxY + 9);
+      const toLines = pdf.splitTextToSize(formData.to, halfWidth - 8);
+      pdf.text(toLines, contentStartX + halfWidth + 3, boxY + 11);
       
-      yPos += boxHeight + 2;
+      yPos += boxHeight + 1;
       
       // Respected Sir/Madam
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'normal');
-      pdf.text('Respected sir/Madam', contentStartX + 2, yPos);
+      pdf.text('Respected sir/Madam', contentStartX + 3, yPos);
       
-      yPos += 6;
+      yPos += 5;
       
       // Subject line
       pdf.setFont('helvetica', 'bold');
-      pdf.text('Subject :', contentStartX + 2, yPos);
+      pdf.text('Subject :', contentStartX + 3, yPos);
       
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
-      const subjectLines = pdf.splitTextToSize(formData.subject, contentWidth - 20);
-      pdf.text(subjectLines, contentStartX + 18, yPos);
+      const subjectLines = pdf.splitTextToSize(formData.subject, contentWidth - 25);
+      pdf.text(subjectLines, contentStartX + 20, yPos);
       
-      yPos += 10;
+      yPos += 8;
       
       // Body section - Large box for content
-      const bodyBoxHeight = 120;
-      pdf.setLineWidth(0.3);
+      const bodyBoxHeight = 125;
+      pdf.setLineWidth(0.4);
       pdf.rect(contentStartX, yPos, contentWidth, bodyBoxHeight);
       
       pdf.setFontSize(8);
       pdf.setFont('helvetica', 'normal');
-      const bodyLines = pdf.splitTextToSize(formData.body, contentWidth - 6);
-      pdf.text(bodyLines, contentStartX + 3, yPos + 5);
+      const bodyLines = pdf.splitTextToSize(formData.body, contentWidth - 8);
+      pdf.text(bodyLines, contentStartX + 4, yPos + 6);
       
-      yPos += bodyBoxHeight + 5;
+      yPos += bodyBoxHeight + 2;
       
       // Date section
       const dateBoxWidth = contentWidth / 2;
-      const dateBoxHeight = 10;
+      const dateBoxHeight = 8;
       pdf.rect(contentStartX, yPos, dateBoxWidth, dateBoxHeight);
       
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('Date:', contentStartX + 2, yPos + 6);
+      pdf.text('Date:', contentStartX + 3, yPos + 5.5);
       
       pdf.setFont('helvetica', 'normal');
-      pdf.text(currentDate || formData.date, contentStartX + 15, yPos + 6);
+      pdf.setFontSize(8);
+      pdf.text(currentDate || formData.date, contentStartX + 13, yPos + 5.5);
       
-      yPos += dateBoxHeight + 2;
+      yPos += dateBoxHeight + 1;
       
       // ===== FOOTER SECTION =====
       // Footer boxes for remarks and signatures
-      const footerBoxHeight = 15;
+      const footerBoxHeight = 18;
       
       // Remarks By HoD and Dean/IQAC boxes
+      pdf.setLineWidth(0.4);
       pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
       pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
       
       pdf.setFontSize(8);
       pdf.setFont('helvetica', 'normal');
-      pdf.text('Remarks By HoD', contentStartX + 2, yPos + 4);
-      pdf.text('Dean/IQAC(if applicable)', contentStartX + halfWidth + 2, yPos + 4);
+      pdf.text('Remarks By HoD', contentStartX + 3, yPos + 5);
+      pdf.text('Dean/IQAC(if applicable)', contentStartX + halfWidth + 3, yPos + 5);
       
       yPos += footerBoxHeight;
       
@@ -282,8 +289,8 @@ const Template = () => {
       pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
       pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
       
-      pdf.text('Remarks by Principal', contentStartX + 2, yPos + 4);
-      pdf.text('Remarks by Director(A&A)', contentStartX + halfWidth + 2, yPos + 4);
+      pdf.text('Remarks by Principal', contentStartX + 3, yPos + 5);
+      pdf.text('Remarks by Director(A&A)', contentStartX + halfWidth + 3, yPos + 5);
       
       yPos += footerBoxHeight;
       
@@ -291,8 +298,8 @@ const Template = () => {
       pdf.rect(contentStartX, yPos, halfWidth, footerBoxHeight);
       pdf.rect(contentStartX + halfWidth, yPos, halfWidth, footerBoxHeight);
       
-      pdf.text('Office Use/ A.O', contentStartX + 2, yPos + 4);
-      pdf.text('CEO', contentStartX + halfWidth + 2, yPos + 4);
+      pdf.text('Office Use/ A.O', contentStartX + 3, yPos + 5);
+      pdf.text('CEO', contentStartX + halfWidth + 3, yPos + 5);
       
       // Save the PDF
       pdf.save(`Faculty_Request_Letter_${currentDate.replace(/\./g, '_')}.pdf`);
